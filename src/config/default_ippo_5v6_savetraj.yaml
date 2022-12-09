@@ -1,0 +1,86 @@
+# --- Defaults ---
+# --- pymarl options ---
+algo_name: "ippo"
+runner: "ippo" # Runs 1 env for an episode
+mac: "dcntrl_mac" # Basic controller
+env: sc2 # "mod_act" # Environment name
+run_script: "run_ippo" 
+seed: 92814
+env_args: {}  # Arguments for the environment
+batch_size_run: 1 # Number of environments to run in parallel
+test_nepisode: 5005 # Number of episodes to test for
+test_interval: 50000 # Test after {} timesteps have passed
+test_greedy: True # Use greedy evaluation (if False, will set epsilon floor to 0
+log_interval: 50000 # Log summary of stats after every {} timesteps
+runner_log_interval: 50000 # Log runner stats (not test stats) every {} timesteps
+learner_log_interval: 50000 # Log training stats every {} timesteps
+t_max: 10050000  # Stop running after this many timesteps
+use_cuda: True # Use gpu by default unless it isn't available
+buffer_cpu_only: True # If true we won't keep all of the replay buffer in vram
+
+# --- Logging options ---
+use_tensorboard: False # Log results to tensorboard
+save_model: False  # Save the models to disk
+save_model_interval: 1000000 # Save models after this many timesteps
+load_step: 7000000  # Load model closest to the specified timesteps (if 0 choose max possible)
+checkpoint_paths: ["/scratch/cluster/clw4542/marl_results/ippo_5v6/models/ippo_sc2_saved-batchsize=1000_diff=7_seed=112358_01-14-11-52-27/",
+                   "/scratch/cluster/clw4542/marl_results/ippo_5v6/models/ippo_sc2_saved-batchsize=1000_diff=7_seed=119527_01-14-11-52-27/",
+                   "/scratch/cluster/clw4542/marl_results/ippo_5v6/models/ippo_sc2_saved-batchsize=1000_diff=7_seed=122529_01-14-11-52-27/",
+                   "/scratch/cluster/clw4542/marl_results/ippo_5v6/models/ippo_sc2_saved-batchsize=1000_diff=7_seed=1285842_01-14-11-52-27/",
+                   "/scratch/cluster/clw4542/marl_results/ippo_5v6/models/ippo_sc2_saved-batchsize=1000_diff=7_seed=78590_01-14-11-52-27/"
+                  ] 
+evaluate: True  # Evaluate model for test_nepisode episodes and quit (no training)
+save_replay: False # Saving the replay of the model loaded from checkpoint_path
+save_eval_traj: True  # Saving evaluation trajectories 
+local_results_path: "/scratch/cluster/clw4542/marl_results/ippo_5v6" 
+
+# --- GAIL params ---
+rew_type: "env" # options: [gail, env, mixed] # train ippo+gail
+gail_rew_coef: 0.3
+gail_epoch: 120 # important to tune!
+gail_buffer_size: 5100 # number of episodes in buffer MUST be larger than test_nepisodes
+gail_batch_size: 64 #  number of episodes of data to update GAIL with. Must be less than number of expert episodes for now.
+
+save_agent_batches: True  # MUST BE TRUE TO INTIALIZE GAIL
+save_agent_batchsize: 5005 # number of episodes in saved batch.
+save_agent_batches_interval: 1000000 # save agent batches after this many timesteps
+
+# -- GAIL EXP PARAMS --- 
+gail_mask_ally_feats: False
+gail_exp_eps: 200 # 1000
+gail_exp_use_same_data_idxs: True # determines what idxs of expert data each agent gets
+gail_exp_use_single_seed: False # if False, use a different seed of expert data per agent
+# if train_gail_rew is True this  must be specified. Make sure to include timestep!
+# gail data paths must be length 1 or length n_agents (1 gail data path per agent)
+# gail_data_seeds: [112358, 1285842, 78590, 119527, 122529]
+gail_data_paths: [""] 
+
+
+# --- Arguments for the algorithm
+action_selector: "epsilon_greedy" # not actually used for ippo
+
+# --- RL hyperparameters ---
+gamma: 0.99
+batch_size: 1023 # # Number of episodes to train on # CHANGE NAME TO MINIBATCH SIZE
+buffer_size: 1024 #  # Size of the replay buffer
+lr: 0.0005 # Learning rate for agents
+critic_lr: 0.0005 # Learning rate for critics
+optim_alpha: 0.99 # RMSProp alphas
+optim_eps: 0.00001 # RMSProp epsilon
+grad_norm_clip: 10 # Reduce magnitude of gradients above this L2 norm
+
+# --- IPPO 5v6 specific params --- 
+ppo_epoch: 10
+clip_param: 0.05
+
+# --- Agent parameters ---
+agent: "ippo"
+critic: "ippo"
+rnn_hidden_dim: 64 # Size of hidden state for rnn layers
+mlp_hidden_dim: 64 # Size of MLP layers
+obs_agent_id: True 
+obs_last_action: True 
+
+# --- Experiment running params ---
+repeat_id: 1
+label: "saved-batchsize=5000_ts=7m_concurrent-demos-diff-policies_DATAONLY" 

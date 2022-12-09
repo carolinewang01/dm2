@@ -1,0 +1,103 @@
+# --- Defaults ---
+# --- pymarl options ---
+algo_name: "ippo"
+runner: "ippo" # Runs 1 env for an episode
+mac: "dcntrl_mac" # Basic controller
+env: sc2 # "mod_act" # Environment name
+run_script: "run_ippo" 
+seed: 112358
+env_args: {}  # Arguments for the environment
+batch_size_run: 1 # Number of environments to run in parallel
+test_nepisode: 32 # Number of episodes to test for
+test_interval: 50000 # 100000 # Test after {} timesteps have passed
+test_greedy: True # Use greedy evaluation (if False, will set epsilon floor to 0
+log_interval: 50000 # 100000 # Log summary of stats after every {} timesteps
+runner_log_interval: 50000 # 100000 # Log runner stats (not test stats) every {} timesteps
+learner_log_interval: 50000 # 100000 # Log training stats every {} timesteps
+t_max: 20050000 # 10050000 # Stop running after this many timesteps
+use_cuda: True # Use gpu by default unless it isn't available
+buffer_cpu_only: True # If true we won't keep all of the replay buffer in vram
+
+# --- Logging options ---
+use_tensorboard: True # Log results to tensorboard
+save_model: True # Save the models to disk
+save_model_interval: 1000000 # Save models after this many timesteps
+load_step: 0  # Load model trained on this many timesteps (0 if choose max possible)
+checkpoint_paths: [
+    ""
+    # "/scratch/cluster/clw4542/marl_results/ippo_3sv4z/models/ippo_sc2_baseline_seed=119527_01-23-20-41-57"
+  ] 
+
+evaluate: False # Evaluate model for test_nepisode episodes and quit (no training)
+transfer: False
+save_replay: False # Saving the replay of the model loaded from checkpoint_path
+save_eval_traj: False # Saving evaluation trajectories
+local_results_path: "/scratch/cluster/clw4542/marl_results/ippo_3sv4z" 
+
+# --- GAIL params ---
+rew_type: "mixed" # "mixed" # train ippo+gail
+update_gail: True
+gail_load_models: False # if True, specify gail_model_paths
+gail_state_discrim: True # if False, use state-action discriminators
+gail_use_same_model: True
+gail_obs_discr: False # whether the discriminator signal is observed by the agent
+gail_sil: False
+
+gail_rew_coef: 0.05 # important to tune!
+gail_epoch: 120 # important to tune!
+gail_buffer_size: 1024 # number of episodes in buffer
+gail_batch_size: 64 #  number of episodes of data to update GAIL with. Must be less than number of expert episodes for now.
+
+# "/scratch/cluster/clw4542/marl_results/ippo_3m/agents_batches/ippo_sc2_diff=7_seed=112358_12-02-16-51-35/2040706/"  # if train_gail_rew is True this  must be specified. Make sure to include timestep!
+save_agent_batches: False  # log agent batches for gail data
+save_agent_batchsize: 1000 # number of episodes in saved batch.
+save_agent_batches_interval: 1000000 # save agent batches after this many timesteps
+
+# -- GAIL ABLATION EXP PARAMS --- 
+gail_mask_ally_feats: False
+gail_exp_eps: 1000
+gail_exp_use_same_data_idxs: True # if True, each agent gets same idx of expert data. Else, each agent gets offset expert data (see gail_learner.py)
+gail_exp_use_single_seed: True # if True, each agent uses same data path for expert data. Else, use a different seed of expert data per agent. 
+
+gail_data_paths: [ 
+# "/scratch/cluster/clw4542/marl_results/qmix_3sv4z/agents_batches/qmix_sc2_saved-data=3003-eval-only-eps=0.05__seed=111111_07-31-14-56-08/_eval",
+"/scratch/cluster/clw4542/marl_results/qmix_3sv4z/agents_batches/qmix_sc2_saved-data=3003-eval-only__seed=111111_07-27-17-04-09/_eval",
+                  # TOP IS BEST
+                  # "/scratch/cluster/clw4542/marl_results/ippo_3sv4z/agents_batches/ippo_sc2_baseline_seed=119527_01-23-20-41-57/5000345", # 1000018 2000040  3000110  4000174  5000345  6000447  7000627  8000821  9000874  10000990 
+                  # "/scratch/cluster/clw4542/marl_results/ippo_3sv4z/agents_batches/ippo_sc2_baseline_seed=112358_01-23-20-41-57/5000259",
+                  # "/scratch/cluster/clw4542/marl_results/ippo_3sv4z/agents_batches/ippo_sc2_baseline_seed=1285842_01-23-20-41-57/5000255",
+                  # "/scratch/cluster/clw4542/marl_results/ippo_3sv4z/agents_batches/ippo_sc2_baseline_seed=122529_01-23-20-41-57/5000287",
+                  # "/scratch/cluster/clw4542/marl_results/ippo_3sv4z/agents_batches/ippo_sc2_baseline_seed=78590_01-23-20-41-57/5000520"
+                  ]
+gail_model_paths: []
+
+# --- Arguments for the algorithm
+action_selector: "epsilon_greedy" # not actually used for ippo
+
+# --- IPPO 5v6 specific params --- 
+ppo_epoch: 15
+clip_param: 0.2
+gain: 0.01
+
+# --- RL hyperparameters ---
+gamma: 0.99
+batch_size: 1023 # 31 # Number of episodes to train on # CHANGE NAME TO MINIBATCH SIZE
+buffer_size: 1024 # 32 # Size of the replay buffer
+lr: 0.0005 # Learning rate for agents
+critic_lr: 0.0005 # Learning rate for critics
+optim_alpha: 0.99 # RMSProp alphas
+optim_eps: 0.00001 # RMSProp epsilon
+grad_norm_clip: 10 # Reduce magnitude of gradients above this L2 norm
+
+# --- Agent parameters ---
+agent: "ippo"
+critic: "ippo"
+rnn_hidden_dim: 64 # Size of hidden state for rnn layers
+mlp_hidden_dim: 64 # Size of MLP layers
+obs_agent_id: True 
+obs_last_action: True 
+
+# --- Experiment running params ---
+repeat_id: 1
+label: "tmax=20M_rew-type=mixed_demo=qmix_demos=concurrent_exp-policies=all-same"  # "baseline"
+# label: "rew-type=mixed_sil_gail-buffer-size=1024"
