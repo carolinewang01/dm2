@@ -64,7 +64,7 @@ class IQLearner:
             mac_out_detach = mac_out.clone().detach()
             mac_out_detach[avail_actions == 0] = -9999999
             cur_max_actions = mac_out_detach[:, 1:].max(dim=3, keepdim=True)[1]
-            # TODO: MODIFY THIS TO LOGSUMEXP?? How to combine with soft Q update?
+            # TODO: How to combine double q update with soft Q update?
             # cur_max_actions = mac_out_detach[:, 1:].logsumexp(dim=3, keepdim=True)[1] 
             target_max_qvals = th.gather(target_mac_out, 3, cur_max_actions).squeeze(3)
         else:

@@ -31,18 +31,14 @@ class R_Actor(nn.Module):
         self.tpdv = dict(dtype=th.float32, device=self.device)
 
         self.base = MLPBase(args, input_shape)
-        # print("AGENT INIT MLP")
 
         if self._use_recurrent_policy:
             self.rnn = RNNLayer(self.rnn_hidden_dim, self.rnn_hidden_dim,
                                 self._recurrent_N, self._use_orthogonal)
-            # print("AGENT INIT RNN")
 
         self.act = ACTLayer(args.n_actions, self.rnn_hidden_dim,
                             self._use_orthogonal, self._gain)
-        # print("AGENT INIT ACT")
         self.to(self.device)
-        # print("SENT AGENT TO DEVICE")
 
     def forward(self, obs, rnn_states, available_actions=None, deterministic=False):
         """

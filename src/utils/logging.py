@@ -27,8 +27,6 @@ class Logger:
         self.stats[key].append((t, value))
 
         if self.use_tb:
-            # print("KEY IS ", key)
-            # print("VALUE IS ", value)
             self.tb_logger(key, value, t)
 
         if self.use_sacred and to_sacred:

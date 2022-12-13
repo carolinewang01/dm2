@@ -116,7 +116,6 @@ def execute_eval(alg, policy_map_name,
                         checkpoint_model_name=checkpoint_name,
                         eval_seed=eval_seed, load_step=load_step)
 
-    # TODO execute command
     exec_str = f"python src/main.py --env-config=sc2 --config={dest_conf_name} --alg-config={alg} with env_args.map_name={map_namedict[policy_map_name]} --seed={eval_seed}"
     os.system(exec_str)
 

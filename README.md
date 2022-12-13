@@ -1,8 +1,8 @@
 This repository was originally forked from https://github.com/oxwhirl/pymarl. 
 Please refer to their READMe.md for instructions on how to install StarCraft II and SMAC, save/load checkpointed models, visualize SC2 tasks.
-Parts of the PPO implementation come from https://github.com/marlbenchmark/on-policy. 
+Parts of the IPPO/DM2 implementation originate from https://github.com/marlbenchmark/on-policy. 
 
-Below are the instructions to reproduce the experiments found in the paper, [**DM^2**: Distributed Multi-Agent Reinforcement Learning for Distribution Matching](https://arxiv.org/abs/2206.00233). The [RMAPPO](https://arxiv.org/abs/2103.01955) baseline was produced by running the code provided by Yu et al. at https://github.com/marlbenchmark/on-policy.
+Below are the instructions to reproduce the experiments found in the paper, [**DM^2**: Distributed Multi-Agent Reinforcement Learning for Distribution Matching](https://arxiv.org/abs/2206.00233). The [RMAPPO](https://arxiv.org/abs/2103.01955) baseline was produced by directly running the code provided by Yu et al. at https://github.com/marlbenchmark/on-policy.
 Please contact us if you have any further questions. 
 
 All commands below should be run from the `pymarl` directory. The list of seeds used in the main paper are as follows: 112358, 1285842, 78590, 119527, 122529.

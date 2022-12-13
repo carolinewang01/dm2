@@ -11,12 +11,10 @@ class DcntrlMAC:
         self.n_agents = args.n_agents
         self.args = args
         input_shape = self._get_input_shape(scheme)
-        # print("GOT INPUT SHAPE")
 
         self._build_agents(input_shape)
-        # print("MAC BUILT AGENTS")
         self._build_critics(input_shape)
-        # print("MAC BUILT CRITICS")
+
         self.algo_name = args.algo_name
         if self.algo_name != "ippo":
             self.action_selector = action_REGISTRY[args.action_selector](args)

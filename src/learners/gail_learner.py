@@ -15,14 +15,6 @@ from torch import autograd
 from stable_baselines3.common.running_mean_std import RunningMeanStd
 
 
-def remove_ally_feats(obs_info, obs):
-    print("OBS SHAPE IS ", obs.shape)
-    print("OBS INFO IS ", obs_info)
-    ally_feats_start_idx = obs_info["move_feats_dim"] + obs_info["enemy_feats_dim"] 
-    return th.cat([obs[:, :, :ally_feats_start_idx], obs[:, :, ally_feats_start_idx + obs_info["ally_feats_dim"]:]], 
-        axis=-1)
-
-
 class GailDiscriminator(nn.Module):
     def __init__(self, args, input_dim, hidden_dim, device, max_buffer_eps=None, 
                  epath=None, agent_idx=None, obs_info=None):
@@ -38,12 +30,9 @@ class GailDiscriminator(nn.Module):
         self.trunk.train()
 
         self.optimizer = th.optim.Adam(self.trunk.parameters())
-
         self.ret_rms = RunningMeanStd(shape=())
         self.returns = None
-
         self.obs_info = obs_info
-
         self.agent_idx = agent_idx
 
         self.agent_storage = BatchStorage(args, buffer_size=max_buffer_eps, obs_info=obs_info)
@@ -154,10 +143,6 @@ class GailDiscriminator(nn.Module):
         policy_disc_pred_all / n, expert_disc_pred_all / n
 
     def predict_reward(self, obs, actions=None, gamma=1, update_rms=False):
-        if self.args.gail_mask_ally_feats:
-            obs = remove_ally_feats(self.obs_info, obs)
-
-        # obs = obs.reshape(-1, obs.shape[-1])
         if actions is None:
             discrim_input = obs
         else:
@@ -201,7 +186,6 @@ class BatchStorage:
 
         if epath is not None:
             with th.no_grad():
-                print(f"GAIL AGENT {agent_idx} EPATH IS {epath}")
                 try:
                     all_data = np.load(epath + ".npz", allow_pickle=True, mmap_mode="r")
                     all_data = all_data["arr_0"]
@@ -223,11 +207,6 @@ class BatchStorage:
 
             del all_data
             th.cuda.empty_cache()
-
-            if self.args.gail_mask_ally_feats:
-                for i, batch in enumerate(self.batches):
-                    self.batches[i]["obs"] = remove_ally_feats(self.obs_info, batch["obs"])
-
         else:
             self.init_batches()
 
@@ -242,9 +221,6 @@ class BatchStorage:
         batch = dict()
         batch['obs'] = obs
         batch['actions'] = actions
-
-        if self.args.gail_mask_ally_feats:
-            batch["obs"] = remove_ally_feats(self.obs_info, obs)
         self.batches.append(batch)
     
     def get_last_ep(self):
@@ -261,12 +237,10 @@ class BatchStorage:
         # return random.sample(self.batches, batch_size)
         
     def save(self, name):
-        #print(name)
         print("SAVING BATCH WITH ", len(self.batches), " TRAJECTORIES")
         if not os.path.exists(name):
             path = Path(name)
             path.mkdir(parents=True, exist_ok=True)
-        # np.save("{}.npy".format(name), self.batches) 
         np.savez_compressed("{}.npz".format(name), self.batches) 
 
     def reset(self):
@@ -304,11 +278,6 @@ class PriorityBatchStorage(BatchStorage):
             # heapq is min-heap, so ep batch with lowest return is removed
             heapq.heappop(self.batches)
         heapq.heappush(self.batches, HeapItem(ep_ret, batch))
-
-        # except Exception as e:
-        #     print(e)
-        #     print("LEN BATCHES ", len(self.batches))
-        #     import pdb; pdb.set_trace()
 
     def get_random_batch(self, batch_size=1):
         batch = random.sample(self.batches, batch_size)

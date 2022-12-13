@@ -38,7 +38,7 @@ gail_load_models: False # if True, specify gail_model_paths
 gail_state_discrim: True # if False, use state-action discriminators
 gail_use_same_model: True
 gail_obs_discr: False # whether the discriminator signal is observed by the agent
-gail_sil: True
+gail_sil: False
 
 gail_rew_coef: 0.3 # important to tune!
 gail_epoch: 120 # important to tune!
@@ -55,12 +55,7 @@ gail_exp_eps: 1000
 gail_exp_use_same_data_idxs: True # if True, each agent gets same idx of expert data. Else, each agent gets offset expert data (see gail_learner.py)
 gail_exp_use_single_seed: True # if True, each agent uses same data path for expert data. Else, use a different seed of expert data per agent. 
 
-gail_data_paths: ["/scratch/cluster/clw4542/marl_results/qmix_3sv3z/agents_batches/qmix_sc2_saved-data=3003-eval-only-eps=0.1__seed=111111_07-31-14-52-55/_eval" 
-                  # qmix demo, test mode=True
-                  # "/scratch/cluster/clw4542/marl_results/qmix_3sv3z/agents_batches/qmix_sc2_saved-data=3003-eval-only__seed=111111_07-28-11-24-57/_eval"
-                  # converged ippo demo
-                  # "/scratch/cluster/clw4542/marl_results/ippo_3sv3z/agents_batches/ippo_sc2_baseline_seed=112358_07-27-14-16-06/10000342" # 10000342  1000104  2000108  3000127  4000164  5000186  6000206  7000259  8000295  9000297
-                  ]
+gail_data_paths: []
 gail_model_paths: []
 
 # --- Arguments for the algorithm
@@ -91,6 +86,4 @@ obs_last_action: True
 
 # --- Experiment running params ---
 repeat_id: 1
-# label: "rew-type=mixed_gail-coef=0.5_demo=ippo_demo-ts=10m" # "rew-type=mixed_demos=concurrent_exp-policies=all-same" 
-# label: "rew-type=mixed_gail-coef=0.3_demos=qmix_eps=0.1"
-label: "rew-type=mixed_sil_gail-buffer-size=1024"
+label: ""

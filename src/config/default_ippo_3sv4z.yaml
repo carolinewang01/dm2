@@ -23,10 +23,7 @@ use_tensorboard: True # Log results to tensorboard
 save_model: True # Save the models to disk
 save_model_interval: 1000000 # Save models after this many timesteps
 load_step: 0  # Load model trained on this many timesteps (0 if choose max possible)
-checkpoint_paths: [
-    ""
-    # "/scratch/cluster/clw4542/marl_results/ippo_3sv4z/models/ippo_sc2_baseline_seed=119527_01-23-20-41-57"
-  ] 
+checkpoint_paths: [] 
 
 evaluate: False # Evaluate model for test_nepisode episodes and quit (no training)
 transfer: False
@@ -59,16 +56,7 @@ gail_exp_eps: 1000
 gail_exp_use_same_data_idxs: True # if True, each agent gets same idx of expert data. Else, each agent gets offset expert data (see gail_learner.py)
 gail_exp_use_single_seed: True # if True, each agent uses same data path for expert data. Else, use a different seed of expert data per agent. 
 
-gail_data_paths: [ 
-# "/scratch/cluster/clw4542/marl_results/qmix_3sv4z/agents_batches/qmix_sc2_saved-data=3003-eval-only-eps=0.05__seed=111111_07-31-14-56-08/_eval",
-"/scratch/cluster/clw4542/marl_results/qmix_3sv4z/agents_batches/qmix_sc2_saved-data=3003-eval-only__seed=111111_07-27-17-04-09/_eval",
-                  # TOP IS BEST
-                  # "/scratch/cluster/clw4542/marl_results/ippo_3sv4z/agents_batches/ippo_sc2_baseline_seed=119527_01-23-20-41-57/5000345", # 1000018 2000040  3000110  4000174  5000345  6000447  7000627  8000821  9000874  10000990 
-                  # "/scratch/cluster/clw4542/marl_results/ippo_3sv4z/agents_batches/ippo_sc2_baseline_seed=112358_01-23-20-41-57/5000259",
-                  # "/scratch/cluster/clw4542/marl_results/ippo_3sv4z/agents_batches/ippo_sc2_baseline_seed=1285842_01-23-20-41-57/5000255",
-                  # "/scratch/cluster/clw4542/marl_results/ippo_3sv4z/agents_batches/ippo_sc2_baseline_seed=122529_01-23-20-41-57/5000287",
-                  # "/scratch/cluster/clw4542/marl_results/ippo_3sv4z/agents_batches/ippo_sc2_baseline_seed=78590_01-23-20-41-57/5000520"
-                  ]
+gail_data_paths: []
 gail_model_paths: []
 
 # --- Arguments for the algorithm
@@ -99,5 +87,4 @@ obs_last_action: True
 
 # --- Experiment running params ---
 repeat_id: 1
-label: "tmax=20M_rew-type=mixed_demo=qmix_demos=concurrent_exp-policies=all-same"  # "baseline"
-# label: "rew-type=mixed_sil_gail-buffer-size=1024"
+label: ""

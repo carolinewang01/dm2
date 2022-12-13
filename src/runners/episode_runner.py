@@ -100,7 +100,6 @@ class EpisodeRunner:
             except:
                 pass
         cur_returns = self.test_returns if test_mode else self.train_returns
-        # print("CUR RETURNS ARE ", cur_returns)
         log_prefix = f"test_{self.args.algo_name}_" if test_mode else f"train_{self.args.algo_name}_"
         cur_stats.update({k: cur_stats.get(k, 0) + env_info.get(k, 0) for k in set(cur_stats) | set(env_info)})
         cur_stats["n_episodes"] = 1 + cur_stats.get("n_episodes", 0)
@@ -110,9 +109,7 @@ class EpisodeRunner:
             self.t_env += self.t
 
         cur_returns.append(episode_return)
-        # print("LENGTH OF TEST RETURNS IS ", len(self.test_returns))
         if test_mode and (len(self.test_returns) == self.args.test_nepisode - 1):
-            # print("LOGGING")s
             self._log(cur_returns, cur_stats, log_prefix)
         elif self.t_env - self.log_train_stats_t >= self.args.runner_log_interval:
             self._log(cur_returns, cur_stats, log_prefix)

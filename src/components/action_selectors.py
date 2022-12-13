@@ -18,17 +18,8 @@ class MultinomialActionSelector():
         if self.args.algo_name == "isql":
             values = self.args.alpha * th.logsumexp(q_values / self.args.alpha, dim=2, keepdims=True)
             logits = 1. / self.args.alpha * (q_values - values)
-            # print("AVAIL ACTIONS ARE ", avail_actions)
             logits[avail_actions == 0.0] = -1e10
-            # print("LOGITS ARE ", logits)
             exp_logits = th.exp(logits) # shape: (1, n_agents, n_actions)
-
-            # if all actions for agent have prob 0, add prob mass to no-op
-            # summed_logits = th.sum(exp_logits, dim=2) # .repeat(1, 1, n_actions)
-            # noop_logits = exp_logits[:, :, 0]
-            # ones = th.ones_like(noop_logits)
-            # corrected_noop_logits = th.where(summed_logits != 0., noop_logits, ones)
-            # exp_logits[:, :, 0] = corrected_noop_logits
 
             picked_actions = Categorical(exp_logits).sample().long()
 

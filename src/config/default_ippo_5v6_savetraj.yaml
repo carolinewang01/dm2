@@ -23,12 +23,7 @@ use_tensorboard: False # Log results to tensorboard
 save_model: False  # Save the models to disk
 save_model_interval: 1000000 # Save models after this many timesteps
 load_step: 7000000  # Load model closest to the specified timesteps (if 0 choose max possible)
-checkpoint_paths: ["/scratch/cluster/clw4542/marl_results/ippo_5v6/models/ippo_sc2_saved-batchsize=1000_diff=7_seed=112358_01-14-11-52-27/",
-                   "/scratch/cluster/clw4542/marl_results/ippo_5v6/models/ippo_sc2_saved-batchsize=1000_diff=7_seed=119527_01-14-11-52-27/",
-                   "/scratch/cluster/clw4542/marl_results/ippo_5v6/models/ippo_sc2_saved-batchsize=1000_diff=7_seed=122529_01-14-11-52-27/",
-                   "/scratch/cluster/clw4542/marl_results/ippo_5v6/models/ippo_sc2_saved-batchsize=1000_diff=7_seed=1285842_01-14-11-52-27/",
-                   "/scratch/cluster/clw4542/marl_results/ippo_5v6/models/ippo_sc2_saved-batchsize=1000_diff=7_seed=78590_01-14-11-52-27/"
-                  ] 
+checkpoint_paths: [] 
 evaluate: True  # Evaluate model for test_nepisode episodes and quit (no training)
 save_replay: False # Saving the replay of the model loaded from checkpoint_path
 save_eval_traj: True  # Saving evaluation trajectories 
@@ -83,4 +78,4 @@ obs_last_action: True
 
 # --- Experiment running params ---
 repeat_id: 1
-label: "saved-batchsize=5000_ts=7m_concurrent-demos-diff-policies_DATAONLY" 
+label: "" 

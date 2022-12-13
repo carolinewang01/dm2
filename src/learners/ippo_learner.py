@@ -97,7 +97,6 @@ class IPPOLearner:
         self.gail_sil = args.gail_sil
         # scenarios: ippo w/env reward, ippo w/env reward + saving data for gail, 
         # ippo training w/gail reward
-        # fixed ippo from checkpoint + iql
         if self.rew_type in  ["gail", "mixed"] or self.gail_load_models:
             if self.args.gail_exp_use_single_seed: # use same expert data for all agents
                 self.gail_data_paths = [self.args.gail_data_paths[0] for i in range(self.n_agents)]
@@ -112,8 +111,6 @@ class IPPOLearner:
             gail_agent_paths = [osp.join(self.gail_data_paths[i], f"agent_{i}") for i in range(self.n_agents)]        
 
         if self.save_gail_data or self.gail_sil:
-            # assert self.episode_limit * self.args.save_agent_batchsize <= self.args.save_agent_batches_interval, \
-            #     "Number of timesteps to save in batch must be less than the saving interval"
             gail_agent_paths = [None for i in range(self.n_agents)]
 
 
@@ -121,11 +118,8 @@ class IPPOLearner:
         if self.rew_type in ["gail", "mixed"] or self.save_gail_data or self.gail_load_models:
             if self.args.gail_state_discrim:
                 gail_input_dim = self.obs_shape
-                if args.gail_mask_ally_feats:
-                    gail_input_dim -= obs_info["ally_feats_dim"]
             else: 
                 gail_input_dim = self.obs_shape + 1
-            print("GAIL INPUT DIM IS ", gail_input_dim)
 
             self.gails = [GailDiscriminator(self.args, 
                                             input_dim=gail_input_dim, 
@@ -166,8 +160,6 @@ class IPPOLearner:
 
             actions_onehot = ep_batch["actions_onehot"][:, :, i, :]
             available_actions = ep_batch["avail_actions"][:, :, i, :]
-            # noop_tensor = th.zeros_like(available_actions, dtype=th.float32, device=self.device)
-            # noop_tensor[:, :, 0] = 1
 
             max_ep_t = ep_batch.max_t_filled()
             max_agent_t = th.sum((available_actions[:, :max_ep_t] != self.no_op_tensor)[:, :, 0]) # add 1 to be consistent with max_ep_t
@@ -387,16 +379,6 @@ class IPPOLearner:
             current_values = self.mac.get_value_ippo(agent_id, obs, rnn_state_critic).clone().detach()
             advantages = returns - current_values
 
-            # Not using pop_art for now
-            # if self._use_popart or self._use_valuenorm:
-            #     advantages = []
-            #     for i, value_normalizer in enumerate(self.value_normalizers):
-            #         agent_advantages = returns[i, :-1] - value_normalizer.denormalize(buffer.value_preds[i, :-1])
-            #         advantages.append(agent_advantages)
-            #     advantages = th.cat(advantages, axis=0)
-            # else:
-            # advantages = buffer.returns[:-1] - buffer.value_preds[:-1]
-
             # advantage normalization
             advantages_copy = advantages.clone().detach()
             advantages_copy[terminated == 0.0] = 0.
@@ -493,14 +475,6 @@ class IPPOLearner:
         if self._use_gae:
             gae = 0
             for step in reversed(range(T)):
-                # Assuming we do not use pop_art for now
-                # if self._use_popart or self._use_valuenorm:
-                #     delta = rewards[step] + self.gamma * value_normalizer.denormalize(
-                #         value_preds[step + 1]) * mask[step + 1] - value_normalizer.denormalize(
-                #         value_preds[step])
-                #     gae = delta + self.gamma * self.gae_lambda * terminated[step + 1] * gae
-                #     returns[step] = gae + value_normalizer.denormalize(value_preds[step])
-                # else:
                 delta = rewards[:, step] + self.gamma * value_preds[:, step + 1] * terminated[:, step + 1] - \
                         value_preds[:, step]
                 gae = delta + self.gamma * self.gae_lambda * terminated[:, step + 1] * gae
@@ -509,9 +483,7 @@ class IPPOLearner:
             returns.append(value_preds[:, -1])
             for step in reversed(range(T)):
                 returns.append(returns[-1] * self.gamma * terminated[:, step + 1] + rewards[:, step])
-        # TODO: check why we are indexing with [:-1]?
-        # returns = th.tensor(list(reversed(returns))[:-1], device=self.device)
-        returns = th.flip(th.cat(returns, axis=1), dims=[1]).unsqueeze(-1) # TODO: check that the returns were flipped properly along time axis
+        returns = th.flip(th.cat(returns, axis=1), dims=[1]).unsqueeze(-1)
         return returns[:, :T]
 
     """ DATA GENERATION CODE FROM SEPARATED BUFFER """
@@ -542,7 +514,7 @@ class IPPOLearner:
 
         if available_actions is not None:
             available_actions = available_actions[:-1].reshape(-1, available_actions.shape[-1])
-        # value_preds = value_preds[:-1].reshape(-1, 1) # Why are we cutting off value preds 1 before?? Leads to a size inconsistency
+
         value_preds = value_preds.reshape(-1, 1) # Why are we cutting off value preds 1 before?? Leads to a size inconsistency
         returns = returns.reshape(-1, 1)
         terminated = terminated.reshape(-1, 1)

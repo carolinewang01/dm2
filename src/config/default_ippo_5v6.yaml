@@ -56,25 +56,8 @@ gail_exp_use_single_seed: True # if True, each agent uses same data path for exp
 # if training gail, this must be specified. Make sure to include timestep!
 # gail data paths must be list of length 1 or length n_agents (1 gail data path per agent)
 
-# concurrent demos from DIFFERENT policies
-# gail_data_paths: [ 
-                  # "/scratch/cluster/clw4542/marl_results/ippo_5v6/agents_batches/ippo_sc2_saved-batchsize=5000-ts=5m-concurrent-demos-diff-policies-DATAONLY_seed=92814_01-17-22-42-49/_eval/",
-                  # "/scratch/cluster/clw4542/marl_results/ippo_5v6/agents_batches/ippo_sc2_saved-batchsize=5000-ts=7m-concurrent-demos-diff-policies-DATAONLY_seed=92814_01-18-12-49-55/_eval/"
-                # ]
-
-gail_data_paths: [
-  # "/scratch/cluster/clw4542/marl_results/qmix_5v6/agents_batches/qmix_sc2_saved-data=5005-eval-only-eps=0.025__seed=111111_07-31-14-41-26/_eval"
-  "/scratch/cluster/clw4542/marl_results/qmix_5v6/agents_batches/qmix_sc2_saved-data=5005-eval-only__seed=111111_07-27-16-53-47/_eval",
-# "/scratch/cluster/clw4542/marl_results/ippo_5v6/agents_batches/ippo_sc2_saved-batchsize=5005_seed=112358_03-06-21-12-41/7000078", # 1000011  2000020  3000037  4000048  5000052  6000071  7000078  8000106  9000116 10000131  
-#   "/scratch/cluster/clw4542/marl_results/ippo_5v6/agents_batches/ippo_sc2_saved-batchsize=5005_diff=7_seed=1285842_01-14-11-52-27/7000069/",
-#   "/scratch/cluster/clw4542/marl_results/ippo_5v6/agents_batches/ippo_sc2_saved-batchsize=5005_diff=7_seed=119527_01-14-11-52-27/7000088/",
-#   "/scratch/cluster/clw4542/marl_results/ippo_5v6/agents_batches/ippo_sc2_saved-batchsize=5005_diff=7_seed=122529_01-14-11-52-27/7000114/",
-#   "/scratch/cluster/clw4542/marl_results/ippo_5v6/agents_batches/ippo_sc2_saved-batchsize=5005_diff=7_seed=78590_01-14-11-52-27/7000063/"
-              ]
-gail_model_paths: [
-  # trained discriminator from our method
-  # "/scratch/cluster/clw4542/marl_results/ippo_5v6/models/ippo_sc2_rew-type=mixed-exp-ts=10m-demos=concurrent-exp-policies=all-same_seed=112358_03-17-14-41-26/10000114"
-]
+gail_data_paths: []
+gail_model_paths: []
 
 # --- Arguments for the algorithm
 action_selector: "epsilon_greedy" # not actually used for ippo
@@ -103,5 +86,4 @@ obs_last_action: True
 
 # --- Experiment running params ---
 repeat_id: 1
-label: "tmax=20M_rew-type=mixed_demo=qmix_demos=concurrent_exp-policies=all-same" # "rew-type=env_gail-obs-discr=True_gail-load-models=True_update-gail=False_discr=all-same" # "rew-type=mixed_exp-ts=10m_demos=concurrent_exp-policies=all-same"
-# label: "rew-type=mixed_sil_gail-buffer-size=1024" 
+label: ""
