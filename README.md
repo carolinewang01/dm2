@@ -3,7 +3,8 @@ Please refer to their READMe.md for instructions on how to install StarCraft II 
 Parts of the IPPO/DM2 implementation originate from https://github.com/marlbenchmark/on-policy. 
 
 Below are the instructions to reproduce the experiments found in the paper, [**DM^2**: Distributed Multi-Agent Reinforcement Learning for Distribution Matching](https://arxiv.org/abs/2206.00233). The [RMAPPO](https://arxiv.org/abs/2103.01955) baseline was produced by directly running the code provided by Yu et al. at https://github.com/marlbenchmark/on-policy.
-Please contact us if you have any further questions. 
+
+The data used to generate the paper's results may be found at the corresponding Huggingface [repo[(https://huggingface.co/datasets/carolinewang01/dm2/)
 
 All commands below should be run from the `pymarl` directory. The list of seeds used in the main paper are as follows: 112358, 1285842, 78590, 119527, 122529.
 The maps used in the paper are `5v6`, `3sv4z`, and `3sv3z`. The commands below will use the `5v6` map as an example, but different map names may be substituted in.
